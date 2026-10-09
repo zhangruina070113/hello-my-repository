@@ -13,9 +13,9 @@ function git(args) {
   return spawnSync("git", args, { cwd: root, encoding: "utf8" });
 }
 
-/** 执行 git 并把输出直接显示到屏幕 */
-function gitLive(args) {
-  return spawnSync("git", args, { cwd: root, stdio: "inherit" });
+/** 执行 git 并把输出直接显示到屏幕（extra 放在子命令之前，用来临时覆盖配置） */
+function gitLive(args, extra) {
+  return spawnSync("git", (extra || []).concat(args), { cwd: root, stdio: "inherit" });
 }
 
 function today() {
@@ -64,15 +64,14 @@ function checkProxy(proxyUrl) {
   console.log("========== 发布到网站 ==========");
   console.log("");
 
-  // 先看看梯子在不在
-  const proxy = getProxy();
-  if (proxy) {
-    const alive = await checkProxy(proxy);
+  // 当前 Git 为 github.com 配置的代理（没配置时用默认端口）
+  const configuredProxy = getProxy();
+  const proxy = configuredProxy || "http://127.0.0.1:7892";
+  if (configuredProxy) {
+    const alive = await checkProxy(configuredProxy);
     if (alive === false) {
-      console.log("⚠ 检测到 GitHub 代理没有在运行：" + proxy);
-      console.log("  请先把梯子打开，然后再双击一次。");
+      console.log("⚠ GitHub 代理没在运行（" + configuredProxy + "），本次会直接连接。");
       console.log("");
-      process.exit(1);
     }
   }
 
@@ -108,24 +107,41 @@ function checkProxy(proxyUrl) {
     process.exit(0);
   }
 
-  console.log("");
-  console.log("正在上传到 GitHub" + (proxy ? "（走代理 " + proxy + "）" : "") + "……");
+  // 上传：先按当前配置试，不行就换另一种网络方式，尽量自动跑通
+  const direct = ["-c", "http.https://github.com.proxy=", "-c", "http.proxy=", "-c", "https.proxy="];
+  const viaProxy = ["-c", "http.https://github.com.proxy=" + proxy, "-c", "http.proxy=" + proxy, "-c", "https.proxy=" + proxy];
 
-  const maxTries = 4;
-  for (let i = 1; i <= maxTries; i++) {
-    if (gitLive(["push"]).status === 0) {
+  const plans = [
+    { label: "按当前配置", extra: [] },
+    { label: "直连", extra: direct },
+    { label: "走代理 " + proxy, extra: viaProxy },
+  ];
+
+  for (let p = 0; p < plans.length; p++) {
+    const plan = plans[p];
+    const tries = 2;
+    for (let i = 1; i <= tries; i++) {
       console.log("");
-      console.log("完成！大约两分钟后刷新网站就能看到新内容。");
-      process.exit(0);
+      console.log("正在上传到 GitHub（" + plan.label + "）……");
+      if (gitLive(["push"], plan.extra).status === 0) {
+        console.log("");
+        console.log("完成！大约两分钟后刷新网站就能看到新内容。");
+        process.exit(0);
+      }
+      if (i < tries) {
+        console.log("");
+        console.log("上传失败，3 秒后重试……");
+        await new Promise((res) => setTimeout(res, 3000));
+      }
     }
-    if (i < maxTries) {
+    if (p < plans.length - 1) {
       console.log("");
-      console.log("第 " + i + " 次上传失败，3 秒后自动重试……");
-      await new Promise((res) => setTimeout(res, 3000));
+      console.log("这种方式不通，换下一种试试……");
     }
   }
 
   console.log("");
-  console.log("上传失败，多半是网络问题。确认梯子在运行，然后再双击一次这个文件。");
+  console.log("上传失败：代理和直连都没成功。");
+  console.log("请检查网络后，再双击一次这个文件。");
   process.exit(1);
 })();
