@@ -1,67 +1,90 @@
 # 我的博客
 
-一个纯静态的个人博客，无需任何构建工具，直接由 **GitHub Pages** 托管。
+基于 [Astro](https://astro.build) + [fuwari](https://github.com/saicaca/fuwari) 模板搭建的个人博客，纯静态生成，托管在 GitHub Pages 上。
 
-在线地址：<https://zhangruina070113.github.io/hello-my-repository/>
+🔗 在线访问：<https://zhangruina070113.github.io/hello-my-repository/>
+
+## 技术栈
+
+| 项 | 方案 |
+|----|------|
+| 框架 | Astro 5（静态生成） |
+| 交互组件 | Svelte 5 |
+| 样式 | Tailwind CSS 3 |
+| 站内搜索 | Pagefind（构建时生成离线索引） |
+| 代码高亮 | Expressive Code（行号 / 折叠 / 复制） |
+| 数学公式 | KaTeX |
+| 部署 | GitHub Actions → GitHub Pages |
+
+## 写一篇新文章
+
+在 `src/content/posts/` 下新建 Markdown 文件，比如 `my-post.md`：
+
+```markdown
+---
+title: 文章标题
+published: 2026-10-09
+description: 一句话摘要
+tags: [随笔]
+category: 随笔
+---
+
+正文内容……
+```
+
+保存后提交推送，GitHub Actions 会自动构建并发布。
+
+也可以用命令生成文章模板：
+
+```bash
+pnpm new-post my-post
+```
+
+## 本地开发
+
+```bash
+pnpm install    # 安装依赖（首次）
+pnpm dev        # 本地开发：http://localhost:4321/hello-my-repository/
+pnpm build      # 构建到 dist/
+pnpm preview    # 预览构建产物
+```
+
+> 需要 Node ≥ 20 和 pnpm 9。
 
 ## 目录结构
 
 ```
-.
-├── index.html              # 首页（文章列表）
-├── about.html              # 关于页面
-├── posts/                  # 所有文章
-│   ├── hello-world.html
-│   └── how-to-add-a-post.html
-├── assets/
-│   ├── style.css           # 全站样式
-│   ├── main.js             # 深色模式 / 年份等交互
-│   └── favicon.svg
-├── .nojekyll               # 告诉 GitHub Pages 不要用 Jekyll 处理
-└── README.md
+src/
+├── config.ts           # 站点配置：标题、导航、侧边栏、主题色（最常改这里）
+├── content/
+│   ├── posts/          # 文章（Markdown，平时只管写这个目录）
+│   └── spec/           # 关于页等页面文案
+├── components/         # 页面组件
+├── layouts/            # 布局
+├── pages/              # 路由
+└── styles/             # 样式
+public/                 # 图片等静态资源
+.github/workflows/      # 自动部署流程
+astro.config.mjs        # Astro 配置（site / base 路径写在这里）
 ```
 
-## 写一篇新文章
+## 部署
 
-1. 复制 `posts/hello-world.html`，重命名为 `posts/你的标题.html`；
-2. 修改 `<title>`、`<h1>`、日期和正文；
-3. 在 `index.html` 的 `post-list` 里复制一张 `<article class="post-card">` 卡片，改成新文章的标题、摘要和链接。
+推送到 `main` 分支后，GitHub Actions 会自动构建并发布到 GitHub Pages。
 
-## 本地预览
+与站点地址相关的两处配置在 `astro.config.mjs`：
 
-直接用浏览器打开 `index.html` 即可。或者在项目根目录启动一个本地服务器：
-
-```bash
-python -m http.server 8000
+```js
+site: "https://zhangruina070113.github.io",
+base: "/hello-my-repository/",
 ```
 
-然后访问 <http://localhost:8000>。
+如果以后仓库改名，这两处要同步修改。
 
-## 发布到 GitHub
+## 备份
 
-```bash
-git add .
-git commit -m "post: 添加新文章"
-git push
-```
+最初那一版纯静态站点保存在 `static-backup` 分支。
 
-推送后 GitHub Pages 会自动重新构建并发布。
+## 许可
 
-## 启用 GitHub Pages（首次）
-
-1. 打开仓库页面的 **Settings → Pages**；
-2. 在 **Build and deployment** 下，Source 选择 **Deploy from a branch**；
-3. Branch 选择 `main`，目录选择 `/ (root)`，点击 **Save**；
-4. 等待一两分钟，站点就会发布到 <https://zhangruina070113.github.io/hello-my-repository/>。
-
-## 图片放哪里
-
-在 `assets/` 下新建 `images/` 目录，把图片放进去，然后用相对路径引用：
-
-```html
-<img src="../assets/images/example.jpg" alt="说明文字">
-```
-
-## License
-
-个人博客内容版权归作者所有。
+基于 [fuwari](https://github.com/saicaca/fuwari)（MIT License）搭建。

@@ -4,14 +4,31 @@ Thumbs.db
 desktop.ini
 
 # 编辑器
-.vscode/
 .idea/
+*.iml
 *.swp
 
 # 依赖与构建产物
 node_modules/
 dist/
+.astro/
 .cache/
+
+# 环境变量
+.env
+.env.production
+
+# 锁文件（这个项目只用 pnpm）
+package-lock.json
+bun.lockb
+yarn.lock
 
 # 日志
 *.log
+
+# 部署平台
+.vercel
+
+# 本地试验目录（不提交）
+.fuwari/
+.tools/
