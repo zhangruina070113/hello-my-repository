@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>第一篇文章：为什么我要开始写博客 · 我的博客</title>
+<meta name="description" content="写作是最好的思考方式。">
+<link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../assets/style.css">
+<script>
+  (function () {
+    var saved = localStorage.getItem("theme");
+    var prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+    document.documentElement.dataset.theme = saved || (prefersDark ? "dark" : "light");
+  })();
+</script>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="container header-inner">
+    <a class="brand" href="../index.html">我的博客</a>
+    <nav class="nav">
+      <a href="../index.html">首页</a>
+      <a href="../about.html">关于</a>
+      <button id="theme-toggle" class="theme-toggle" type="button" aria-label="切换主题">🌙</button>
+    </nav>
+  </div>
+</header>
+
+<main class="container">
+  <article class="article">
+    <header class="article-header">
+      <h1>第一篇文章：为什么我要开始写博客</h1>
+      <div class="post-meta">
+        <time datetime="2026-10-09">2026-10-09</time>
+        <span class="tag">随笔</span>
+      </div>
+    </header>
+
+    <p>写作是最好的思考方式。</p>
+
+    <p>很多想法在脑子里的时候感觉清晰，一旦要用文字表达出来，才会发现哪些地方其实没想明白。把零散的知识整理成一篇完整的文字，既是对自己的复盘，也可能帮到偶然路过的你。</p>
+
+    <h2>我想要什么样的博客</h2>
+    <p>我希望它足够简单：</p>
+    <ul>
+      <li>打开速度快，不依赖任何外部框架；</li>
+      <li>写作时不需要和复杂的工具链搏斗；</li>
+      <li>文章可以长期保存，随时迁移。</li>
+    </ul>
+
+    <h2>接下来</h2>
+    <p>我会陆续在这里记录学习笔记和一些随想。如果你也有想写却一直没动笔的东西，不妨就从今天开始。</p>
+
+    <blockquote>种一棵树最好的时间是十年前，其次是现在。</blockquote>
+
+    <p>我们下篇文章见 👋</p>
+  </article>
+
+  <nav class="article-nav">
+    <a href="../index.html">← 返回首页</a>
+  </nav>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <p>© <span id="year">2026</span> 我的博客 · 由 GitHub Pages 托管</p>
+  </div>
+</footer>
+
+<script src="../assets/main.js"></script>
+</body>
+</html>
