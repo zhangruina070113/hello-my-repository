@@ -29,6 +29,9 @@ yarn.lock
 # 部署平台
 .vercel
 
+# Playwright MCP 的运行产物（截图、快照、日志）
+.playwright-mcp/
+
 # 本地试验目录（不提交）
 .fuwari/
 .tools/
