@@ -1,126 +1,73 @@
 # 我的博客
 
-个人技术博客 —— 记录课程学习、数据结构与算法笔记，以及日常的技术折腾。
+一个基于 [Astro](https://astro.build) 构建的个人技术博客，用于记录课程学习、数据结构与算法笔记。
 
-基于 [Astro](https://astro.build) + [fuwari](https://github.com/saicaca/fuwari) 模板搭建，纯静态生成，已上线运行。
+站点采用静态生成，文章以 Markdown 管理，构建时自动生成全文搜索索引，并通过 GitHub Actions 持续部署到 GitHub Pages，无需任何服务器。
 
-## 在线访问
-
-🔗 [https://zhangruina070113.github.io/hello-my-repository/](https://zhangruina070113.github.io/hello-my-repository/)
-
-## 站点特色
-
-- **内容与代码分离**：文章全部用 Markdown 编写（`src/content/posts/`），写内容不需要碰代码
-- **无后端架构**：GitHub Pages 托管 + GitHub Actions 部署，零服务器成本
-- **双击式写作流程**：新建、修改、预览、发布各有独立脚本，不用记命令
-- **发布前可预览**：本地启动真实站点，排版问题在发布前就能发现
-- **亮暗双模式**：跟随系统自动切换，访客也可以手动切换
-- **离线搜索**：Pagefind 在构建时生成索引，站内搜索无需后端
-- **代码体验**：代码高亮 + 行号 + 语言标签 + 一键复制、阅读进度条、目录跟随
-- **数学公式**：KaTeX 渲染，支持行内与独立公式
-- **RSS 与站点地图**：自动生成，方便订阅与搜索引擎收录
+**🔗 在线访问**：[https://zhangruina070113.github.io/hello-my-repository/](https://zhangruina070113.github.io/hello-my-repository/)
 
 ## 技术栈
 
-| 项 | 方案 |
-|----|------|
-| 框架 | Astro 5（静态生成） |
+| 分类 | 方案 |
+|------|------|
+| 框架 | Astro 5（静态站点生成） |
 | 交互组件 | Svelte 5 |
 | 样式 | Tailwind CSS 3 + Stylus |
-| 站内搜索 | Pagefind（构建时生成离线索引） |
-| 代码高亮 | Expressive Code（行号 / 折叠 / 语言标签 / 复制） |
+| 内容管理 | Astro Content Collections + Markdown / YAML frontmatter |
+| 站内搜索 | Pagefind（构建时生成索引，纯前端检索） |
+| 代码高亮 | Expressive Code（行号、语言标签、折叠、一键复制） |
 | 数学公式 | KaTeX |
 | 部署 | GitHub Actions → GitHub Pages |
-| 内容格式 | Markdown + YAML frontmatter |
 
-## 写一篇文章
+## 核心特性
 
-### 方式一：双击脚本（推荐）
+- **零后端架构**：全站静态生成，托管于 GitHub Pages，无服务器成本
+- **构建时搜索**：Pagefind 在构建阶段扫描页面并生成索引，运行时无需任何检索服务
+- **内容与代码分离**：文章、项目、页面文案统一放在 `src/content/`，新增内容不涉及业务代码
+- **完善的代码展示**：语法高亮、行号、语言标签、代码折叠与一键复制
+- **数学公式支持**：行内与块级 LaTeX 公式渲染
+- **明暗主题**：跟随系统偏好，同时支持访客手动切换
+- **订阅与收录**：自动生成 RSS 与 sitemap，便于订阅和搜索引擎索引
+- **响应式布局**：适配桌面与移动端阅读
 
-仓库根目录的四个脚本：
+## 实现要点
 
-| 脚本 | 作用 |
-|------|------|
-| `新建一篇文章.bat` | 输入标题和文件名，生成 Markdown 文件并打开编辑器 |
-| `修改已有文章.bat` | 列出全部文章，按编号打开修改 |
-| `预览网站.bat` | 启动本地服务并打开浏览器，发布前检查排版 |
-| `发布到网站.bat` | 提交并推送到 GitHub，网络异常时自动切换方式重试 |
+- 使用 Astro Content Collections 管理文章，frontmatter 由 Zod schema 校验，字段缺失或类型错误会在构建阶段直接报错
+- 构建流程分为两步：先用 Astro 生成静态页面，再由 Pagefind 扫描产物生成搜索索引
+- 通过 `site` 与 `base` 配置适配 GitHub Pages 项目站的子路径部署，保证静态资源路径正确
+- 部署由 GitHub Actions 完成：校验依赖锁文件 → 构建 → 上传产物 → 发布，推送即自动上线
 
-推送后大约两分钟，线上网站自动更新。
-
-> 文章网址来自文件名：`hello-blog` → `/posts/hello-blog/`。
-> 标题写中文没问题，文件名建议用英文或拼音。
-
-### 方式二：手动创建
-
-在 `src/content/posts/` 下新建 Markdown 文件，比如 `my-post.md`：
-
-```markdown
----
-title: 文章标题
-published: 2026-10-19
-description: 一句话摘要
-tags: [随笔]
-category: 随笔
----
-
-正文内容……
-```
-
-## 开发命令
-
-```bash
-pnpm install    # 安装依赖（首次）
-pnpm dev        # 本地开发：http://localhost:4321/hello-my-repository/
-pnpm build      # 构建到 dist/
-pnpm preview    # 预览构建产物
-pnpm new-post   # 按命令行参数生成文章模板
-```
-
-> 需要 Node ≥ 20 和 pnpm 9。
-
-## 目录结构
+## 项目结构
 
 ```
 src/
-├── config.ts           # 站点配置：标题、导航、侧边栏、主题色（最常改这里）
+├── config.ts           # 站点信息、导航、侧边栏与主题配置
 ├── content/
-│   ├── posts/          # 文章（Markdown，日常写作只管这个目录）
-│   └── spec/           # 关于页等页面文案
-├── components/         # 页面组件
-├── layouts/            # 布局
-├── pages/              # 路由
-└── styles/             # 样式
-public/                 # 图片等静态资源
-docs/                   # 项目文档
-tools/                  # 写作与发布脚本
-.github/workflows/      # 自动部署流程
-astro.config.mjs        # Astro 配置（site / base 路径写在这里）
+│   ├── posts/          # 文章（Markdown）
+│   └── spec/           # 页面文案
+├── components/         # 可复用组件
+├── layouts/            # 页面布局
+├── pages/              # 路由与页面
+└── styles/             # 全局样式
+public/                 # 静态资源
+tools/                  # 内容创作与发布辅助脚本
+.github/workflows/      # GitHub Actions 部署流程
+astro.config.mjs        # Astro 构建配置
 ```
 
-**编辑分工**：`src/content/posts/` 归日常写作直接编辑；`src/config.ts` 用于调整站点信息；其余代码按需维护。
+## 本地运行
 
-## 部署
+需要 Node.js ≥ 20 与 pnpm 9。
 
-推送到 `main` 分支后，GitHub Actions 自动构建并发布到 GitHub Pages。
-
-站点地址相关配置在 `astro.config.mjs`：
-
-```js
-site: "https://zhangruina070113.github.io",
-base: "/hello-my-repository/",
+```bash
+pnpm install     # 安装依赖
+pnpm dev         # 启动开发服务器
+pnpm build       # 构建静态站点并生成搜索索引
+pnpm preview     # 预览构建产物
 ```
 
-如果以后仓库改名，这两处要同步修改。
-
-## 相关文档
-
-- [博客搭建问题记录](docs/博客搭建问题记录.md) —— 搭建过程中遇到的环境、网络、编码等问题与解决办法
-
-## 备份
-
-最初那一版纯静态站点保存在 `static-backup` 分支。
+开发服务器地址：`http://localhost:4321/hello-my-repository/`
 
 ## 许可
 
-基于 [fuwari](https://github.com/saicaca/fuwari)（MIT License）搭建。
+基于 [fuwari](https://github.com/saicaca/fuwari) 模板构建，遵循 MIT License。
