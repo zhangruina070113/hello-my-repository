@@ -61,12 +61,10 @@ astro.config.mjs        # Astro 构建配置
 
 ```bash
 pnpm install     # 安装依赖
-pnpm dev         # 启动开发服务器
+pnpm dev         # 启动开发服务器（地址会打印在终端）
 pnpm build       # 构建静态站点并生成搜索索引
 pnpm preview     # 预览构建产物
 ```
-
-开发服务器地址：`http://localhost:4321/hello-my-repository/`
 
 ## 许可
 
